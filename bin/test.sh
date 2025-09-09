@@ -3,12 +3,20 @@
 # Test script for messaging service endpoints
 # This script tests the local messaging service using the JSON examples from README.md
 
+
 BASE_URL="http://localhost:8080"
 CONTENT_TYPE="Content-Type: application/json"
 
 echo "=== Testing Messaging Service Endpoints ==="
 echo "Base URL: $BASE_URL"
 echo
+
+
+# prelim test: server ping
+echo "prelim: server ping"
+curl -X GET "$BASE_URL/" \
+  -H "$CONTENT_TYPE" \
+  -w "\nStatus: %{http_code}\n\n"
 
 # Test 1: Send SMS
 echo "1. Testing SMS send..."
