@@ -1,41 +1,45 @@
-drop table if exists message_type;
-drop table if exists conversation;
-drop table if exists message_queue;
+DROP TABLE IF EXISTS message_queue;
+DROP TABLE IF EXISTS message;
+DROP TABLE IF EXISTS conversation;
 
 SET TIME ZONE 'UTC';
 
-create type message_type as ENUM ('sms', 'mms', 'email')
--- pending, errored, delivered
-create type send_status as ENUM ('P', 'E', 'D')
-create table message (
-    message_id serial primary key,
-    from varchar (255) not null, 
-    to varchar(255) not null, 
-    type message_type not null, 
-    -- avoid malfeasance  ? 
-    body text not null, 
-    attachments text[], 
-    timestamp timestamptz not null
-    conversation_id foreign key references(converstaions.conversation_id) not null
+-- enums
 
-)
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'message_type') THEN
+        CREATE TYPE message_type AS ENUM ('sms', 'mms', 'email');
+    END IF;
 
-create table conversation(
-    conversation_id serial primary key, 
-    -- created as strings  
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'send_status') THEN
+        CREATE TYPE send_status AS ENUM ('P', 'E', 'D');
+    END IF;
+END
+$$;
+
+
+-- conversations first
+CREATE TABLE conversation (
+    conversation_id SERIAL PRIMARY KEY, 
     participants TEXT[]
+);
 
+-- then messages
+CREATE TABLE message (
+    message_id SERIAL PRIMARY KEY,
+    sent_by VARCHAR(255) NOT NULL, 
+    received_by VARCHAR(255) NOT NULL, 
+    type message_type NOT NULL, 
+    body TEXT NOT NULL, 
+    attachments TEXT[], 
+    created_at TIMESTAMPTZ NOT NULL,
+    conversation_id INT NOT NULL REFERENCES conversation(conversation_id)
+);
 
-)
-
-create table message_queue(
-
-message_id foreign key references message.message_id not null, 
-status send_status not null, 
-
-
-
-
-
-)
-
+-- then queue
+CREATE TABLE message_queue (
+    message_id INT NOT NULL REFERENCES message(message_id),
+    status send_status NOT NULL, 
+    created_at TIMESTAMPTZ
+);

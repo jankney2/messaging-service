@@ -1,6 +1,6 @@
 const request = require("supertest");
 const express = require("express");
-const app = require("../server");
+const app = require("../app");
 
 describe("Messaging Service Endpoints", () => {
   test("prelim: server ping", async () => {
@@ -18,7 +18,7 @@ describe("Messaging Service Endpoints", () => {
       attachments: null,
       timestamp: "2024-11-01T14:00:00Z",
     });
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(201);
   });
 
   test("2. Send MMS", async () => {
@@ -58,7 +58,7 @@ describe("Messaging Service Endpoints", () => {
       attachments: null,
       timestamp: "2024-11-01T14:00:00Z",
     });
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(201);
   });
 
   test("5. Incoming MMS webhook", async () => {
