@@ -18,7 +18,8 @@ describe("Messaging Service Endpoints", () => {
       attachments: null,
       timestamp: "2024-11-01T14:00:00Z",
     });
-    expect(res.status).toBe(201);
+
+    expect(res.statusCode).toBe(201);
   });
 
   test("2. Send MMS", async () => {
@@ -73,7 +74,7 @@ describe("Messaging Service Endpoints", () => {
         attachments: ["https://example.com/received-image.jpg"],
         timestamp: "2024-11-01T14:00:00Z",
       });
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(201);
   });
 
   test("6. Incoming Email webhook", async () => {
@@ -87,12 +88,14 @@ describe("Messaging Service Endpoints", () => {
         attachments: ["https://example.com/received-document.pdf"],
         timestamp: "2024-11-01T14:00:00Z",
       });
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(201);
   });
 
   test("7. Get conversations", async () => {
     const res = await request(app).get("/api/conversations");
     expect(res.status).toBe(200);
+
+    expect(res.body.data.length).toBeGreaterThan(0);
   });
 
   test("8. Get messages for conversation", async () => {

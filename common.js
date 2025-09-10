@@ -1,5 +1,6 @@
 const sql = require("./db.js");
 const postgres = require("postgres");
+
 function isValidPhoneNumber(input) {
   if (!input) return { valid: false, normalized: "" };
 
@@ -13,17 +14,34 @@ function isValidPhoneNumber(input) {
 }
 
 async function insertMessageToQueue({ message }) {
-  let queueItem = await sql`
-    insert into message_queue(
-    message_id, 
-status, 
-created_at, 
-updated_at  
-    )values (${message.message_id}, 'P', NOW(), NOW())
-
+  try {
+    await sql`
+      insert into message_queue(
+      message_id, 
+      status, 
+      created_at, 
+      updated_at  
+      )values (${message.message_id}, 'P', NOW(), NOW())
     `;
-  return true;
+    return true;
+  } catch (error) {
+    throw new Error(
+      `Failed to queue message ${message.message_id}: ${error.message}`
+    );
+  }
 }
+
+async function getMessagesByConversationId(id) {
+  try {
+    const messages = await sql`
+      select * from message where conversation_id = ${id} order by timestamp desc
+    `;
+    return messages;
+  } catch (error) {
+    return error;
+  }
+}
+
 async function insertMessage({
   from,
   to,
@@ -32,6 +50,7 @@ async function insertMessage({
   attachments,
   timestamp,
   conversationId,
+  messaging_provider_id,
 }) {
   try {
     const [message] = await sql`
@@ -50,12 +69,17 @@ async function insertMessage({
     returning *
   `;
 
+    if (messaging_provider_id) {
+      await sql`
+      update message set messaging_provider_id = ${messaging_provider_id} where message_id = ${message.message_id}`;
+    }
+
     let queued = await insertMessageToQueue({ message });
     if (queued) {
       return message;
     }
   } catch (error) {
-    return error;
+    throw error;
   }
 
   return message;
@@ -97,9 +121,22 @@ function isValidEmail(email) {
   return email.includes("@") && email.includes(".");
 }
 
+async function getConversations() {
+  try {
+    const conversations = await sql`
+      select * from conversation limit 10
+    `;
+    return conversations;
+  } catch (error) {
+    return error;
+  }
+}
+
 module.exports = {
   isValidEmail,
   isValidPhoneNumber,
   insertMessage,
   getConversationByParticipants,
+  getMessagesByConversationId,
+  getConversations,
 };

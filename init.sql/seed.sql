@@ -33,13 +33,16 @@ CREATE TABLE message (
     type message_type NOT NULL, 
     body TEXT NOT NULL, 
     attachments TEXT[], 
-    created_at TIMESTAMPTZ NOT NULL,
+    timestamp TIMESTAMPTZ NOT NULL,
     conversation_id INT NOT NULL REFERENCES conversation(conversation_id)
+    messaging_provider_id varchar(255)
 );
 
 -- then queue
+
 CREATE TABLE message_queue (
     message_id INT NOT NULL REFERENCES message(message_id),
     status send_status NOT NULL, 
-    created_at TIMESTAMPTZ
+    created_at TIMESTAMPTZ,
+    updated_at timestamptz
 );

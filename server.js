@@ -1,6 +1,4 @@
-// crud operations for api/messages
-
-// message queue
+const app = require("./app");
 
 const PORT = 8080;
 const NODE_ENV = process.env.NODE_ENV || "DEV";
@@ -14,6 +12,6 @@ if (NODE_ENV === "DEV") {
 
 if (require.main === module) {
   app.listen(PORT, () => {
-    console.log(`🚀 Server listening on ${PORT}`);
+    console.log(`Server running on port: ${PORT}`);
   });
 }

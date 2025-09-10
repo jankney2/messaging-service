@@ -28,9 +28,8 @@ class ApiResponse {
     };
   }
 
-  // New method: send directly via Express res
   send(res) {
-    return res.status(this.statusCode).json(this.toJSON());
+    res.status(this.statusCode).json(this.toJSON());
   }
 }
 
