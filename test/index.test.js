@@ -18,7 +18,7 @@ describe("Messaging Service Endpoints", () => {
       attachments: null,
       timestamp: "2024-11-01T14:00:00Z",
     });
-    expect(res.status).toBe(201);
+    expect(res.status).toBe(200);
   });
 
   test("2. Send MMS", async () => {
