@@ -1,4 +1,4 @@
-const { isValidPhoneNumber } = require("../common");
+const { isValidPhoneNumber } = require("../app/common");
 
 describe("isValidPhoneNumber", () => {
   test("accepts number with +country code", () => {

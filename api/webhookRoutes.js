@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const ApiResponse = require("./ApiResponse");
-const { insertMessage } = require("../common");
+const { insertMessage } = require("../app/common");
 
 // Incoming SMS/MMS webhook
 router.post("/sms", async (req, res) => {

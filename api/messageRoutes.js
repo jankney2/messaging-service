@@ -1,7 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const ApiResponse = require("./ApiResponse");
-const { insertMessage, isValidPhoneNumber } = require("../common");
+const {
+  insertMessage,
+  isValidPhoneNumber,
+  getConversationByParticipants,
+  isValidEmail,
+} = require("../app/common");
 
 router.post("/sms", async (req, res) => {
   try {

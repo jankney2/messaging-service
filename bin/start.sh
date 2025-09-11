@@ -12,5 +12,5 @@ echo "installing dependencies"
 echo "➡️  Installing dependencies..."
 npm install
 
-node ./server.js
+node ./app/server.js
 echo "Application started successfully!" 

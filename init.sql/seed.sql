@@ -1,3 +1,4 @@
+
 DROP TABLE IF EXISTS message_queue;
 DROP TABLE IF EXISTS message;
 DROP TABLE IF EXISTS conversation;
@@ -19,14 +20,13 @@ END
 $$;
 
 
--- conversations first
 CREATE TABLE conversation (
     conversation_id SERIAL PRIMARY KEY, 
     participant_1 VARCHAR(255) NOT NULL,
     participant_2 VARCHAR(255) NOT NULL
 );
 
--- then messages
+
 CREATE TABLE message (
     message_id SERIAL PRIMARY KEY,
     sent_by VARCHAR(255) NOT NULL, 
@@ -35,11 +35,10 @@ CREATE TABLE message (
     body TEXT NOT NULL, 
     attachments TEXT[], 
     timestamp TIMESTAMPTZ NOT NULL,
-    conversation_id INT NOT NULL REFERENCES conversation(conversation_id)
+    conversation_id INT NOT NULL REFERENCES conversation(conversation_id),
     messaging_provider_id varchar(255)
 );
 
--- then queue
 
 CREATE TABLE message_queue (
     message_queue_id SERIAL PRIMARY KEY,
@@ -48,3 +47,5 @@ CREATE TABLE message_queue (
     created_at TIMESTAMPTZ,
     updated_at timestamptz
 );
+
+

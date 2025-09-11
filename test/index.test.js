@@ -1,6 +1,6 @@
 const request = require("supertest");
 const express = require("express");
-const app = require("../app");
+const app = require("../app/app");
 
 describe("Messaging Service Endpoints", () => {
   test("prelim: server ping", async () => {
@@ -96,10 +96,12 @@ describe("Messaging Service Endpoints", () => {
     expect(res.status).toBe(200);
 
     expect(res.body.data.length).toBeGreaterThan(0);
+    expect(res.body.data[0].messages.length).toBeGreaterThan(0);
   });
 
   test("8. Get messages for conversation", async () => {
     const res = await request(app).get("/api/conversations/1/messages");
     expect(res.status).toBe(200);
+    expect(res.body.data.length).toBeGreaterThan(0);
   });
 });

@@ -1,4 +1,4 @@
-const sql = require("./db");
+const sql = require("./db/db");
 const twilio = require("twilio");
 
 // this will not work until env variables are setup
@@ -11,7 +11,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 class MessageService {
   constructor() {
-    this.sql = require("./db");
+    this.sql = require("./db/db");
     this.twilioClient = twilioClient;
     this.sgMail = sgMail;
   }
@@ -42,7 +42,7 @@ class MessageService {
 
   async updateMessageQueueStatus(messageId, status) {
     try {
-      await sql`update message_queue set status=${status} where message_id=${messageId}`;
+      await sql`update message_queue set status=${status} updated_at=now() where message_id=${messageId}`;
     } catch (error) {
       throw error;
     }

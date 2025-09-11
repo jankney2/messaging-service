@@ -1,11 +1,11 @@
-const ApiResponse = require("./api/ApiResponse");
+const ApiResponse = require("../api/ApiResponse");
 const session = require("express-session");
 const express = require("express");
 const dotenv = require("dotenv");
 dotenv.config();
 const { SESSION_SECRET } = process.env;
 const app = express();
-const apiRoutes = require("./api/apiRoutes");
+const apiRoutes = require("../api/apiRoutes");
 const cors = require("cors");
 
 app.use(express.json());

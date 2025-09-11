@@ -1,4 +1,4 @@
-const sql = require("./db.js");
+const sql = require("../db/db.js");
 const postgres = require("postgres");
 
 function isValidPhoneNumber(input) {
@@ -122,7 +122,15 @@ async function getConversations() {
     const conversations = await sql`
       select * from conversation limit 10
     `;
-    return conversations;
+    const results = [];
+    for (let i = 0; i < conversations.length; i++) {
+      let messages = await getMessagesByConversationId(
+        conversations[i].conversation_id
+      );
+      results.push({ ...conversations[i], messages });
+    }
+
+    return results;
   } catch (error) {
     return error;
   }
