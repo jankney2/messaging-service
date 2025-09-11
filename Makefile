@@ -1,4 +1,4 @@
-.PHONY: setup run test clean help db-up db-down db-logs db-shell
+.PHONY: setup run test clean help db-up db-down db-logs db-shell db-seed
 
 help:
 	@echo "Available commands:"
@@ -10,6 +10,7 @@ help:
 	@echo "  db-down  - Stop the PostgreSQL database"
 	@echo "  db-logs  - Show database logs"
 	@echo "  db-shell - Connect to the database shell"
+	@echo "  db-seed  - Seed the database"
 	@echo "  help     - Show this help message"
 
 setup:
@@ -18,6 +19,8 @@ setup:
 	@docker-compose up -d
 	@echo "Waiting for database to be ready..."
 	@sleep 5
+	@echo "Running database migrations..."
+	@docker-compose exec -T postgres psql -U messaging_user -d messaging_service < init.sql/seed.sql
 	@echo "Setup complete!"
 
 run:
@@ -53,3 +56,7 @@ db-logs:
 db-shell:
 	@echo "Connecting to database shell..."
 	@docker-compose exec postgres psql -U messaging_user -d messaging_service
+
+db-seed:
+	@echo "Seeding database..."
+	@docker-compose exec -T postgres psql -U messaging_user -d messaging_service < init.sql/seed.sql

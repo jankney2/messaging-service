@@ -48,4 +48,13 @@ CREATE TABLE message_queue (
     updated_at timestamptz
 );
 
+-- Grant permissions to messaging_user
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO messaging_user;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO messaging_user;
+GRANT ALL PRIVILEGES ON SCHEMA public TO messaging_user;
 
+-- Ensure future tables and sequences will be accessible
+ALTER DEFAULT PRIVILEGES IN SCHEMA public 
+    GRANT ALL PRIVILEGES ON TABLES TO messaging_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public 
+    GRANT ALL PRIVILEGES ON SEQUENCES TO messaging_user;
