@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const ApiResponse = require("./ApiResponse");
-const { insertMessage } = require("../common");
+const { getConversations } = require("../common");
 
 // Get conversations
-router.get("/api/conversations", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const conversations = await getConversations();
     ApiResponse.ok(conversations, "webhook received successfully").send(res);
@@ -14,7 +14,7 @@ router.get("/api/conversations", async (req, res) => {
 });
 
 // Get messages for a conversation
-router.get("/api/conversations/:id/messages", async (req, res) => {
+router.get("/:id/messages", async (req, res) => {
   try {
     const { id } = req.params;
     const conversationMessages = await getMessagesByConversationId(id);
@@ -26,3 +26,5 @@ router.get("/api/conversations/:id/messages", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+module.exports = router;

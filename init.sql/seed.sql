@@ -22,7 +22,8 @@ $$;
 -- conversations first
 CREATE TABLE conversation (
     conversation_id SERIAL PRIMARY KEY, 
-    participants TEXT[]
+    participant_1 VARCHAR(255) NOT NULL,
+    participant_2 VARCHAR(255) NOT NULL
 );
 
 -- then messages
@@ -41,6 +42,7 @@ CREATE TABLE message (
 -- then queue
 
 CREATE TABLE message_queue (
+    message_queue_id SERIAL PRIMARY KEY,
     message_id INT NOT NULL REFERENCES message(message_id),
     status send_status NOT NULL, 
     created_at TIMESTAMPTZ,

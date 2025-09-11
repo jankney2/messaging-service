@@ -87,15 +87,12 @@ async function insertMessage({
 
 async function getConversationByParticipants({ to, from }) {
   try {
-    // Normalize phone numbers and sort to make order-insensitive
-    const participants = [to.toString(), from.toString()];
-
-    // Look up existing conversation
     const existing = await sql`
       SELECT *
       FROM conversation
-      WHERE participants @> ${sql.array(participants, "text")}
-        AND participants <@ ${sql.array(participants, "text")}
+      WHERE (participant_1=${from}
+        AND participant_2 =${to}) OR (participant_1=${to}
+        AND participant_2 =${from})
     `;
 
     if (existing.length > 0) {
@@ -104,14 +101,13 @@ async function getConversationByParticipants({ to, from }) {
 
     // Insert new conversation with explicit type cast
     const [conversation] = await sql`
-      INSERT INTO conversation (participants)
-      VALUES (${sql.array(participants, "text")})
-      RETURNING conversation_id, participants
+      INSERT INTO conversation (participant_1, participant_2)
+      VALUES (${to}, ${from})
+      RETURNING conversation_id
     `;
 
     return conversation;
   } catch (err) {
-    console.error("Error in getConversationByParticipants:", err);
     throw err;
   }
 }

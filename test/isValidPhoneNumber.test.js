@@ -20,6 +20,6 @@ describe("isValidPhoneNumber", () => {
     expect(isValidPhoneNumber("jacob@jacob.com").valid).toBe(false);
   });
   test("rejects random string", () => {
-    expect(isValidPhoneNumber("afoiejwf")).toBe(false);
+    expect(isValidPhoneNumber("afoiejwf").valid).toBe(false);
   });
 });

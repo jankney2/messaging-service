@@ -29,10 +29,10 @@ router.post("/sms", async (req, res) => {
       ).send(res);
     }
 
-    // const conversation = await getConversationByParticipants({
-    //   to: toPhone.normalized,
-    //   from: fromPhone.normalized,
-    // });
+    const conversation = await getConversationByParticipants({
+      to: toPhone.normalized,
+      from: fromPhone.normalized,
+    });
 
     const message = await insertMessage({
       from: fromPhone.normalized,
@@ -41,7 +41,7 @@ router.post("/sms", async (req, res) => {
       body,
       attachments,
       timestamp,
-      conversationId: 1,
+      conversationId: conversation.conversation_id,
     });
 
     ApiResponse.created(message, "Message created successfully").send(res);
@@ -68,10 +68,10 @@ router.post("/email", async (req, res) => {
       ).send(res);
     }
 
-    // const conversation = await getConversationByParticipants({
-    //   to: toPhone.normalized,
-    //   from: fromPhone.normalized,
-    // });
+    const conversation = await getConversationByParticipants({
+      to,
+      from,
+    });
 
     const message = await insertMessage({
       from,
@@ -80,7 +80,7 @@ router.post("/email", async (req, res) => {
       body,
       attachments,
       timestamp,
-      conversationId: 1,
+      conversationId: conversation.conversation_id,
     });
 
     ApiResponse.created(message, "email created successfully").send(res);
@@ -90,4 +90,4 @@ router.post("/email", async (req, res) => {
   }
 });
 
-module.exports = messageRouter;
+module.exports = router;

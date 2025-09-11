@@ -1,17 +1,11 @@
 const app = require("./app");
-
-const PORT = 8080;
+const dotenv = require("dotenv");
+dotenv.config();
+const PORT = process.env.PORT || 8080;
 const NODE_ENV = process.env.NODE_ENV || "DEV";
-// logging for dev
-if (NODE_ENV === "DEV") {
-  app.use((req, res, next) => {
-    console.log(`[DEV] ${req.method} ${req.originalUrl}`);
-    next();
-  });
-}
 
 if (require.main === module) {
   app.listen(PORT, () => {
-    console.log(`Server running on port: ${PORT}`);
+    console.log(`${NODE_ENV} server running on port: ${PORT}`);
   });
 }

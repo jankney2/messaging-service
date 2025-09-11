@@ -6,7 +6,6 @@ class ApiResponse {
     this.statusCode = statusCode;
   }
 
-  // Convenience methods
   static ok(data, message) {
     return new ApiResponse({ success: true, data, message, statusCode: 200 });
   }
