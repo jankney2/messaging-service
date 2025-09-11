@@ -2,7 +2,7 @@
 
 help:
 	@echo "Available commands:"
-	@echo "  setup    - Set up the project environment and start database"
+	@echo "  setup    - Set up the project environment and start all services"
 	@echo "  run      - Run the application"
 	@echo "  test     - Run tests"
 	@echo "  clean    - Clean up temporary files and stop containers"
@@ -15,39 +15,38 @@ help:
 
 setup:
 	@echo "Setting up the project..."
-	@echo "Starting PostgreSQL database..."
+	@docker-compose down -v
+	@docker-compose build
 	@docker-compose up -d
-	@echo "Waiting for database to be ready..."
+	@echo "Waiting for services to be ready..."
 	@sleep 5
 	@echo "Running database migrations..."
-	@docker-compose exec -T postgres psql -U messaging_user -d messaging_service < init.sql/seed.sql
-	@echo "Setup complete!"
+	@docker-compose exec -T postgres psql -U postgres -d messaging_service < init.sql/seed.sql
+	@echo "Setup complete! App is running at http://localhost:8080"
 
 run:
 	@echo "Running the application..."
-	@./bin/start.sh
+	@docker-compose up app
 
 test:
 	@echo "Running tests..."
-	@echo "Starting test database if not running..."
 	@docker-compose up -d
-	@echo "Running test script..."
-	@./bin/test.sh
+	@sleep 3
+	@docker-compose exec app npm test
 
 clean:
 	@echo "Cleaning up..."
-	@echo "Stopping and removing containers..."
 	@docker-compose down -v
 	@echo "Removing any temporary files..."
 	@rm -rf *.log *.tmp
 
 db-up:
 	@echo "Starting PostgreSQL database..."
-	@docker-compose up -d
+	@docker-compose up -d postgres
 
 db-down:
 	@echo "Stopping PostgreSQL database..."
-	@docker-compose down
+	@docker-compose stop postgres
 
 db-logs:
 	@echo "Showing database logs..."
@@ -55,8 +54,8 @@ db-logs:
 
 db-shell:
 	@echo "Connecting to database shell..."
-	@docker-compose exec postgres psql -U messaging_user -d messaging_service
+	@docker-compose exec postgres psql -U postgres -d messaging_service
 
 db-seed:
 	@echo "Seeding database..."
-	@docker-compose exec -T postgres psql -U messaging_user -d messaging_service < init.sql/seed.sql
+	@docker-compose exec -T postgres psql -U postgres -d messaging_service < init.sql/seed.sql
